@@ -11,6 +11,8 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@types/mongodb": "^3.3.14",
+    "mongodb": "^3.5.0",
     "tslib": "^1"
   },
   "devDependencies": {
@@ -24,6 +26,7 @@
     "eslint-config-oclif": "^3.1",
     "eslint-config-oclif-typescript": "^0.1",
     "mocha": "^5",
+    "mongodb-memory-server": "^6.2.2",
     "nyc": "^14",
     "rimraf": "^3.0.0",
     "ts-node": "^8",

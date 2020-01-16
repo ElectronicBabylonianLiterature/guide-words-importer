@@ -1,16 +1,13 @@
 import {Command, flags} from '@oclif/command'
+import {MongoClient} from 'mongodb'
 
 class GuideWordsImporter extends Command {
   static description = 'describe the command here'
 
   static flags = {
-    // add --version flag to show CLI version
     version: flags.version({char: 'v'}),
     help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    host: flags.string({char: 'h', description: 'MongoDB URI'}),
   }
 
   static args = [{name: 'file'}]
@@ -18,10 +15,21 @@ class GuideWordsImporter extends Command {
   async run() {
     const {args, flags} = this.parse(GuideWordsImporter)
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from .\\src\\index.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    const uri = flags.host || 'mongodb://localhost:27017'
+    this.log(`Connecting to MongoDB ${uri}...`)
+
+    if (args.file) {
+      this.log(`you input --file: ${args.file}`)
+    }
+
+    try {
+      const client = new MongoClient(uri, {useNewUrlParser: true})
+      await client.connect()
+      const collection = client.db('ebl').collection('fragments')
+      await collection.update({_id: 'K.1'}, {$set: {guideWord: '', oraccWords: []}})
+      await client.close()
+    } catch (error) {
+      this.error(error)
     }
   }
 }
