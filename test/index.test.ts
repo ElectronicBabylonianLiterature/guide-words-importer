@@ -21,7 +21,7 @@ describe('guide-words-importer', () => {
   .do(async ctx => ctx.client.connect())
   .finally(async ctx => ctx.client.close())
   .add('collection', ctx => ctx.client.db('ebl').collection('fragments'))
-  .do(async ctx => ctx.collection.insert({_id: 'K.1'}))
+  .do(async ctx => ctx.collection.insertOne({_id: 'K.1'}))
   .stdout()
   .do(ctx => cmd.run(['--host', ctx.uri]))
   .it('runs importgws --host ...', async ctx => {

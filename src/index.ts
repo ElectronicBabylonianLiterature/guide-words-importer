@@ -22,14 +22,16 @@ class GuideWordsImporter extends Command {
       this.log(`you input --file: ${args.file}`)
     }
 
+    const client = new MongoClient(uri, {useNewUrlParser: true})
     try {
-      const client = new MongoClient(uri, {useNewUrlParser: true})
       await client.connect()
       const collection = client.db('ebl').collection('fragments')
-      await collection.update({_id: 'K.1'}, {$set: {guideWord: '', oraccWords: []}})
+      await collection.updateOne({_id: 'K.1'}, {$set: {guideWord: '', oraccWords: []}})
       await client.close()
     } catch (error) {
       this.error(error)
+    } finally {
+      await client.close()
     }
   }
 }
