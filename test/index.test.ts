@@ -44,9 +44,7 @@ describe('guide-words-importer', () => {
         lemma: ['ebllemma1'],
         homonym: 'I',
         guideWord: 'ebl gw1',
-        oraccWords: [
-          {lemma: 'oracclemma1', guideWord: 'oracc gw1'},
-        ],
+        oraccWords: [],
       },
       {
         _id: 'X.2',

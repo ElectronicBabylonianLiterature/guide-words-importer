@@ -23,16 +23,33 @@ function pushOraccWord(guideWord: GuideWords) {
   }
 }
 
+function updateGuideWords(guideWord: GuideWords) {
+  const hasOraccWord = guideWord.oraccLemma || guideWord.oraccGuideWord
+  return hasOraccWord ?
+    {$set: setGuideWord(guideWord), $push: pushOraccWord(guideWord)} :
+    {$set: setGuideWord(guideWord)}
+}
+
+function oraccWordDoesNotExist() {
+  return {oraccWords: {$exists: false}}
+}
+
+function setDeafultOraccWords() {
+  return {$set: {oraccWords: []}}
+}
+
 function createBulkOperations(guideWords: readonly GuideWords[]) {
-  return guideWords.map(guideWord => ({
+  return guideWords.map<object>(guideWord => ({
     updateOne: {
       filter: lemmaAndHomonymMatch(guideWord),
-      update: {
-        $set: setGuideWord(guideWord),
-        $push: pushOraccWord(guideWord),
-      },
+      update: updateGuideWords(guideWord),
     },
-  }))
+  })).concat({
+    updateMany: {
+      filter: oraccWordDoesNotExist(),
+      update: setDeafultOraccWords(),
+    },
+  })
 }
 
 export async function setGuideWords(uri: string, guideWords: readonly GuideWords[]) {
