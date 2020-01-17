@@ -6,10 +6,14 @@ import cmd = require('../src')
 
 describe('guide-words-importer', () => {
   test
-  .stderr()
   .do(() => cmd.run([]))
   .exit(2)
   .it('missing file argument')
+
+  test
+  .do(() => cmd.run(['not-found.csv']))
+  .exit(2)
+  .it('file not found')
 
   test
   .stdout()
