@@ -1,23 +1,35 @@
 import {MongoClient} from 'mongodb'
 import {GuideWords} from './guide-words'
 
+function lemmaAndHomonymMatch(guideWord: GuideWords) {
+  return {
+    lemma: [guideWord.lemma],
+    homonym: guideWord.eblHomonym,
+  }
+}
+
+function setGuideWord(guideWord: GuideWords) {
+  return {
+    guideWord: guideWord.eblGuideWord,
+  }
+}
+
+function pushOraccWord(guideWord: GuideWords) {
+  return {
+    oraccWords: {
+      lemma: guideWord.oraccLemma,
+      guideWord: guideWord.oraccGuideWord,
+    },
+  }
+}
+
 function createBulkOperations(guideWords: readonly GuideWords[]) {
   return guideWords.map(guideWord => ({
     updateOne: {
-      filter: {
-        lemma: [guideWord.lemma],
-        homonym: guideWord.eblHomonym,
-      },
+      filter: lemmaAndHomonymMatch(guideWord),
       update: {
-        $set: {
-          guideWord: guideWord.eblGuideWord,
-          oraccWords: [
-            {
-              lemma: guideWord.oraccLemma,
-              guideWord: guideWord.oraccGuideWord,
-            },
-          ],
-        },
+        $set: setGuideWord(guideWord),
+        $push: pushOraccWord(guideWord),
       },
     },
   }))

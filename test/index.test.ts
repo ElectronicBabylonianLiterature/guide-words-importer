@@ -55,6 +55,7 @@ describe('guide-words-importer', () => {
         guideWord: 'ebl gw2',
         oraccWords: [
           {lemma: 'oracclemma2', guideWord: 'oracc gw2'},
+          {lemma: 'oracclemma3', guideWord: 'oracc gw3'},
         ],
       },
     ])
