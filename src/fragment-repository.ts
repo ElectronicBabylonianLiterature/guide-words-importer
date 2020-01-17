@@ -17,7 +17,7 @@ function setGuideWord(guideWord: GuideWords) {
 function pushOraccWord(guideWord: GuideWords) {
   return {
     oraccWords: {
-      lemma: guideWord.oraccLemma,
+      lemma: guideWord.oraccLemma || guideWord.lemma,
       guideWord: guideWord.oraccGuideWord,
     },
   }
