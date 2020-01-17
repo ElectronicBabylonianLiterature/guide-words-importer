@@ -2,3 +2,5 @@ lemma,eblHomonym,eblGuideWord,oraccLemma,oraccGuideWord
 ebl lemma1,I,ebl gw1,,
 ebllemma2,I,ebl gw2,oracclemma2,oracc gw2
 ebllemma2,I,ebl gw2,,oracc gw3
+ebllemma2,II,ebl gw3,,
+ebllemma2,II,ebl gw4,,

@@ -1,6 +1,8 @@
 import {Command, flags} from '@oclif/command'
+import * as _ from 'lodash'
 import {setGuideWords} from './fragment-repository'
 import {parseFromFile} from './guide-word-parser'
+import {GuideWords} from './guide-words'
 
 class GuideWordsImporter extends Command {
   static description = 'Imports guide words from a CSV file to MongoDB.'
@@ -18,7 +20,16 @@ class GuideWordsImporter extends Command {
 
     try {
       this.log(`Loading guide words from ${file}...`)
-      const guideWords = await parseFromFile(file)
+      const [guideWords] = await parseFromFile(file).then(guideWords => {
+        function isGood(guideWord: GuideWords) {
+          const guideWordCount = _(guideWords)
+          .filter(candidate => candidate.lemma === guideWord.lemma && candidate.eblHomonym === guideWord.eblHomonym)
+          .uniqBy('eblGuideWord')
+          .size()
+          return guideWordCount === 1
+        }
+        return _.partition(guideWords, isGood)
+      })
 
       this.log(`Updating guide words to MongoDB ${host}...`)
       await setGuideWords(host, guideWords)

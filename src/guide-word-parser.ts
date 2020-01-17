@@ -8,12 +8,12 @@ async function readFile(fileName: string) {
   })
 }
 
-function parseGuideWords(csv: string): readonly GuideWords[] | PromiseLike<readonly GuideWords[]> {
+function parseGuideWords(csv: string): readonly GuideWords[] {
   return Papa.parse(csv, {
     header: true,
   }).data
 }
 
-export function parseFromFile(file: string): readonly GuideWords[] | PromiseLike<readonly GuideWords[]> {
+export function parseFromFile(file: string): PromiseLike<readonly GuideWords[]> {
   return readFile(file).then(parseGuideWords)
 }

@@ -33,6 +33,7 @@ describe('guide-words-importer', () => {
   .add('collection', ctx => ctx.client.db('ebl').collection('fragments'))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.1', homonym: 'I', lemma: ['ebl', 'lemma1']}))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.2', homonym: 'I', lemma: ['ebllemma2']}))
+  .do(async ctx => ctx.collection.insertOne({_id: 'X.3', homonym: 'II', lemma: ['ebllemma2']}))
   .stdout()
   .do(ctx => cmd.run(['--host', ctx.uri, './test/guide-words.csv']))
   .it('imports guide words', async ctx => {
@@ -55,6 +56,12 @@ describe('guide-words-importer', () => {
           {lemma: 'oracclemma2', guideWord: 'oracc gw2'},
           {lemma: 'ebllemma2', guideWord: 'oracc gw3'},
         ],
+      },
+      {
+        _id: 'X.3',
+        lemma: ['ebllemma2'],
+        homonym: 'II',
+        oraccWords: [],
       },
     ])
   })
