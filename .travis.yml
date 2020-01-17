@@ -1,11 +1,11 @@
 language: node_js
 node_js:
-  - node
-
+- node
 cache: yarn
-
 script:
-  - ./bin/run --version
-  - ./bin/run --help
-  - yarn run test
-
+- "./bin/run --version"
+- "./bin/run --help"
+- yarn run test
+notifications:
+  slack:
+    secure: jC2bcB0lPrt4Zzij8cwZ59tufPtNerfgqy5hRZJ897uDFliTyUjZ+HppWPbB1UKp9Ak8ySSIHkdfE9xhUfzHLlp3C1JkNu1CkVbAYW0ZUGhF6H2hnmZs8hE+E9GYIVjWYp9YEmNwzznkkKlQO/OUCi7ZsbTMssG3S5xzsICODIgx/pqb0aqTLf9cwfDm9khOS2alQevydOZNQrpk6D7hqW1t3+lAdujB4WkajLIx6qQxN5jNs2VP6ppsstJ+bdJqsU2WUZz83oRH2NEN14+GPP1s3LTaxnREz5s7kvDAeWuyYdRhpbsIpEUXY+vQuA9H9UUE0KwdCoCDh5RYyKBfuPxOumzefXSKNAw8Q0ES5OWDbtZoraTkPIEg830SR08iQ8Lm2WNzCKj1dj6jrVT7Rfs8vEbhsoMgsM+5Unqe1zL+QCmsjcRspwSWvVZto5CX7mnHI4cZmgC7U+5XXz6xN9uqFtPLAFbi2v0UyiwHcJHLM0Y/n47fwvSiQjrErBZjRo0RM9jNRJjr+0qJ6WYtmnsg4ylw8i68OOic3nAj6OAtGS+Jc7RnGvcr1N7AS6mXQ9edE3X8s2QSBIbvnOasg8MGE+CQMs7Aw1DQnwCLQ4DGUrTAmXQMCMgxFRL6+mqyF9HQ/qoQgHkg+ee9qUItI5LpouPaDfJFKfoofkqzGRM=
