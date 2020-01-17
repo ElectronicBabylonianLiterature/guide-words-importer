@@ -1,5 +1,5 @@
 import {Command, flags} from '@oclif/command'
-import {updateFragments} from './fragment-repository'
+import {setGuideWords} from './fragment-repository'
 import {parseFromFile} from './guide-word-parser'
 
 class GuideWordsImporter extends Command {
@@ -21,7 +21,7 @@ class GuideWordsImporter extends Command {
       const guideWords = await parseFromFile(file)
 
       this.log(`Updating guide words to MongoDB ${host}...`)
-      await updateFragments(host, guideWords)
+      await setGuideWords(host, guideWords)
     } catch (error) {
       this.error(error)
     }

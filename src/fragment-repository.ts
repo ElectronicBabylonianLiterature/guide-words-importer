@@ -35,7 +35,7 @@ function createBulkOperations(guideWords: readonly GuideWords[]) {
   }))
 }
 
-export async function updateFragments(uri: string, guideWords: readonly GuideWords[]) {
+export async function setGuideWords(uri: string, guideWords: readonly GuideWords[]) {
   const client = new MongoClient(uri, {useNewUrlParser: true})
   try {
     await client.connect()
