@@ -3,7 +3,7 @@ import {GuideWords} from './guide-words'
 
 function lemmaAndHomonymMatch(guideWord: GuideWords) {
   return {
-    lemma: [guideWord.lemma],
+    lemma: guideWord.lemma.split(' '),
     homonym: guideWord.eblHomonym,
   }
 }

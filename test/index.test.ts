@@ -31,7 +31,7 @@ describe('guide-words-importer', () => {
   .do(async ctx => ctx.client.connect())
   .finally(async ctx => ctx.client.close())
   .add('collection', ctx => ctx.client.db('ebl').collection('fragments'))
-  .do(async ctx => ctx.collection.insertOne({_id: 'X.1', homonym: 'I', lemma: ['ebllemma1']}))
+  .do(async ctx => ctx.collection.insertOne({_id: 'X.1', homonym: 'I', lemma: ['ebl', 'lemma1']}))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.2', homonym: 'I', lemma: ['ebllemma2']}))
   .stdout()
   .do(ctx => cmd.run(['--host', ctx.uri, './test/guide-words.csv']))
@@ -41,7 +41,7 @@ describe('guide-words-importer', () => {
     expect(fragments).to.deep.equal([
       {
         _id: 'X.1',
-        lemma: ['ebllemma1'],
+        lemma: ['ebl', 'lemma1'],
         homonym: 'I',
         guideWord: 'ebl gw1',
         oraccWords: [],
