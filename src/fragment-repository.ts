@@ -1,4 +1,4 @@
-import {MongoClient} from 'mongodb'
+import {MongoClient, MongoClientOptions} from 'mongodb'
 import {GuideWords} from './guide-words'
 
 function lemmaAndHomonymMatch(guideWord: GuideWords) {
@@ -52,8 +52,13 @@ function createBulkOperations(guideWords: readonly GuideWords[]) {
   })
 }
 
-export async function setGuideWords(uri: string, db: string, guideWords: readonly GuideWords[]) {
-  const client = new MongoClient(uri, {useNewUrlParser: true})
+export async function setGuideWords(uri: string, db: string, ssl: boolean, guideWords: readonly GuideWords[]) {
+  const options: MongoClientOptions = {useNewUrlParser: true}
+  if (ssl) {
+    options.ssl = true
+    options.sslValidate = false
+  }
+  const client = new MongoClient(uri, options)
   try {
     await client.connect()
     const collection = client.db(db).collection('words')
