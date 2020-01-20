@@ -41,6 +41,7 @@ describe('guide-words-importer', () => {
     expect(ctx.stderr).to.contain(ctx.uri)
     expect(ctx.stdout).to.contain('ebllemma2,II,ebl gw3,,')
     expect(ctx.stdout).to.contain('ebllemma2,II,ebl gw4,,')
+    expect(ctx.stdout).to.contain(',,,oracc lemma,oracc gw4')
     const fragments = await ctx.collection.find().toArray()
     expect(fragments).to.deep.equal([
       {

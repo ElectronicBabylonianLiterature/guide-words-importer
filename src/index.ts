@@ -3,7 +3,7 @@ import cli from 'cli-ux'
 import * as _ from 'lodash'
 import {setGuideWords} from './fragment-repository'
 import {parseFromFile, unparse} from './guide-word-parser'
-import {GuideWords} from './guide-words'
+import {GuideWords, isValidIn} from './guide-words'
 
 class GuideWordsImporter extends Command {
   static description = 'Imports guide words from a CSV file to MongoDB.'
@@ -35,19 +35,7 @@ class GuideWordsImporter extends Command {
   }
 
   private async loadGuideWords(file: string): Promise<[GuideWords[], GuideWords[]]> {
-    const hasSameLemmaAndHomonym = (guideWord: GuideWords) => (candidate: GuideWords): boolean =>
-      candidate.lemma === guideWord.lemma && candidate.eblHomonym === guideWord.eblHomonym
-
-    const countMatchingGuideWords = (guideWord: GuideWords, guideWords: readonly GuideWords[]): number =>
-      _(guideWords)
-      .filter(hasSameLemmaAndHomonym(guideWord))
-      .uniqBy('eblGuideWord')
-      .size()
-
-    const guideWordIsUniqueIn = (guideWords: readonly GuideWords[]) => (guideWord: GuideWords) =>
-      countMatchingGuideWords(guideWord, guideWords) === 1
-
-    return parseFromFile(file).then(guideWords => _.partition(guideWords, guideWordIsUniqueIn(guideWords)))
+    return parseFromFile(file).then(guideWords => _.partition(guideWords, isValidIn(guideWords)))
   }
 }
 
