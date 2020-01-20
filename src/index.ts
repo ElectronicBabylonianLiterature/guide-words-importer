@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import cli from 'cli-ux'
 import * as _ from 'lodash'
 import {setGuideWords} from './fragment-repository'
-import {parseFromFile} from './guide-word-parser'
+import {parseFromFile, unparse} from './guide-word-parser'
 import {GuideWords} from './guide-words'
 
 class GuideWordsImporter extends Command {
@@ -21,18 +21,20 @@ class GuideWordsImporter extends Command {
 
     try {
       cli.action.start(`Loading guide words from ${file}...`)
-      const [guideWords] = await this.loadGuideWords(file)
+      const [guideWords, rejectedGuideWords] = await this.loadGuideWords(file)
       cli.action.stop()
 
       cli.action.start(`Updating guide words to MongoDB ${host}...`)
       await setGuideWords(host, guideWords)
       cli.action.stop()
+
+      this.log(unparse(rejectedGuideWords))
     } catch (error) {
       this.error(error)
     }
   }
 
-  private async loadGuideWords(file: string): Promise<readonly [readonly GuideWords[], readonly GuideWords[]]> {
+  private async loadGuideWords(file: string): Promise<[GuideWords[], GuideWords[]]> {
     const hasSameLemmaAndHomonym = (guideWord: GuideWords) => (candidate: GuideWords): boolean =>
       candidate.lemma === guideWord.lemma && candidate.eblHomonym === guideWord.eblHomonym
 

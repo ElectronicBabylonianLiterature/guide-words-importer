@@ -14,6 +14,11 @@ function parseGuideWords(csv: string): readonly GuideWords[] {
   }).data
 }
 
-export function parseFromFile(file: string): PromiseLike<readonly GuideWords[]> {
-  return readFile(file).then(parseGuideWords)
+export async function parseFromFile(file: string): Promise<readonly GuideWords[]> {
+  const csv = await readFile(file)
+  return parseGuideWords(csv)
+}
+
+export function unparse(guideWords: GuideWords[]) {
+  return Papa.unparse(guideWords)
 }

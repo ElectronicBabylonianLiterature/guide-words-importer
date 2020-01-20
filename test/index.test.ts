@@ -34,10 +34,13 @@ describe('guide-words-importer', () => {
   .do(async ctx => ctx.collection.insertOne({_id: 'X.1', homonym: 'I', lemma: ['ebl', 'lemma1']}))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.2', homonym: 'I', lemma: ['ebllemma2']}))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.3', homonym: 'II', lemma: ['ebllemma2']}))
+  .stdout()
   .stderr()
   .do(ctx => cmd.run(['--host', ctx.uri, './test/guide-words.csv']))
   .it('imports guide words', async ctx => {
     expect(ctx.stderr).to.contain(ctx.uri)
+    expect(ctx.stdout).to.contain('ebllemma2,II,ebl gw3,,')
+    expect(ctx.stdout).to.contain('ebllemma2,II,ebl gw4,,')
     const fragments = await ctx.collection.find().toArray()
     expect(fragments).to.deep.equal([
       {
