@@ -1,4 +1,5 @@
 import {Command, flags} from '@oclif/command'
+import cli from 'cli-ux'
 import * as _ from 'lodash'
 import {setGuideWords} from './fragment-repository'
 import {parseFromFile} from './guide-word-parser'
@@ -19,23 +20,32 @@ class GuideWordsImporter extends Command {
     const {args: {file}, flags: {host}} = this.parse(GuideWordsImporter)
 
     try {
-      this.log(`Loading guide words from ${file}...`)
-      const [guideWords] = await parseFromFile(file).then(guideWords => {
-        function isGood(guideWord: GuideWords) {
-          const guideWordCount = _(guideWords)
-          .filter(candidate => candidate.lemma === guideWord.lemma && candidate.eblHomonym === guideWord.eblHomonym)
-          .uniqBy('eblGuideWord')
-          .size()
-          return guideWordCount === 1
-        }
-        return _.partition(guideWords, isGood)
-      })
+      cli.action.start(`Loading guide words from ${file}...`)
+      const [guideWords] = await this.loadGuideWords(file)
+      cli.action.stop()
 
-      this.log(`Updating guide words to MongoDB ${host}...`)
+      cli.action.start(`Updating guide words to MongoDB ${host}...`)
       await setGuideWords(host, guideWords)
+      cli.action.stop()
     } catch (error) {
       this.error(error)
     }
+  }
+
+  private async loadGuideWords(file: string): Promise<readonly [readonly GuideWords[], readonly GuideWords[]]> {
+    const hasSameLemmaAndHomonym = (guideWord: GuideWords) => (candidate: GuideWords): boolean =>
+      candidate.lemma === guideWord.lemma && candidate.eblHomonym === guideWord.eblHomonym
+
+    const countMatchingGuideWords = (guideWord: GuideWords, guideWords: readonly GuideWords[]): number =>
+      _(guideWords)
+      .filter(hasSameLemmaAndHomonym(guideWord))
+      .uniqBy('eblGuideWord')
+      .size()
+
+    const guideWordIsUniqueIn = (guideWords: readonly GuideWords[]) => (guideWord: GuideWords) =>
+      countMatchingGuideWords(guideWord, guideWords) === 1
+
+    return parseFromFile(file).then(guideWords => _.partition(guideWords, guideWordIsUniqueIn(guideWords)))
   }
 }
 
