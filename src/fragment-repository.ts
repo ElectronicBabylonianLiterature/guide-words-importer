@@ -56,7 +56,7 @@ export async function setGuideWords(uri: string, db: string, guideWords: readonl
   const client = new MongoClient(uri, {useNewUrlParser: true})
   try {
     await client.connect()
-    const collection = client.db(db).collection('fragments')
+    const collection = client.db(db).collection('words')
     await collection.bulkWrite(createBulkOperations(guideWords))
   } finally {
     await client.close()
