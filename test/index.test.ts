@@ -24,19 +24,20 @@ describe('guide-words-importer', () => {
   })
 
   test
+  .add('db', () => 'ebltest')
   .add('mongod', () => new MongoMemoryServer())
   .finally(async ctx => ctx.mongod.stop())
   .add('uri', async ctx => ctx.mongod.getUri())
   .add('client', async ctx => new MongoClient(ctx.uri, {useNewUrlParser: true}))
   .do(async ctx => ctx.client.connect())
   .finally(async ctx => ctx.client.close())
-  .add('collection', ctx => ctx.client.db('ebl').collection('fragments'))
+  .add('collection', ctx => ctx.client.db(ctx.db).collection('fragments'))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.1', homonym: 'I', lemma: ['ebl', 'lemma1']}))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.2', homonym: 'I', lemma: ['ebllemma2']}))
   .do(async ctx => ctx.collection.insertOne({_id: 'X.3', homonym: 'II', lemma: ['ebllemma2']}))
   .stdout()
   .stderr()
-  .do(ctx => cmd.run(['--host', ctx.uri, './test/guide-words.csv']))
+  .do(ctx => cmd.run(['--host', ctx.uri, '--db', ctx.db, './test/guide-words.csv']))
   .it('imports guide words', async ctx => {
     expect(ctx.stderr).to.contain(ctx.uri)
     expect(ctx.stdout).to.contain('ebllemma2,II,ebl gw3,,')

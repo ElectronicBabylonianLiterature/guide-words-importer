@@ -52,11 +52,11 @@ function createBulkOperations(guideWords: readonly GuideWords[]) {
   })
 }
 
-export async function setGuideWords(uri: string, guideWords: readonly GuideWords[]) {
+export async function setGuideWords(uri: string, db: string, guideWords: readonly GuideWords[]) {
   const client = new MongoClient(uri, {useNewUrlParser: true})
   try {
     await client.connect()
-    const collection = client.db('ebl').collection('fragments')
+    const collection = client.db(db).collection('fragments')
     await collection.bulkWrite(createBulkOperations(guideWords))
   } finally {
     await client.close()

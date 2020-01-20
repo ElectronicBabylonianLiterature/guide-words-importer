@@ -12,12 +12,13 @@ class GuideWordsImporter extends Command {
     version: flags.version({char: 'v'}),
     help: flags.help({char: 'h'}),
     host: flags.string({char: 'h', description: 'MongoDB URI', default: 'mongodb://localhost:27017'}),
+    db: flags.string({char: 'd', description: 'database name', default: 'ebl'}),
   }
 
   static args = [{name: 'file', description: 'Path to the CSV file', required: true}]
 
   async run() {
-    const {args: {file}, flags: {host}} = this.parse(GuideWordsImporter)
+    const {args: {file}, flags: {host, db}} = this.parse(GuideWordsImporter)
 
     try {
       cli.action.start(`Loading guide words from ${file}...`)
@@ -25,7 +26,7 @@ class GuideWordsImporter extends Command {
       cli.action.stop()
 
       cli.action.start(`Updating guide words to MongoDB ${host}...`)
-      await setGuideWords(host, guideWords)
+      await setGuideWords(host, db, guideWords)
       cli.action.stop()
 
       this.log(unparse(rejectedGuideWords))
