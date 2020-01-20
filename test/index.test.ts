@@ -17,6 +17,7 @@ describe('guide-words-importer', () => {
 
   test
   .stderr()
+  .timeout(60000)
   .do(() => cmd.run(['./test/guide-words.csv']))
   .exit(2)
   .it('default database', ctx => {
@@ -28,7 +29,7 @@ describe('guide-words-importer', () => {
   .add('mongod', () => new MongoMemoryServer())
   .finally(async ctx => ctx.mongod.stop())
   .add('uri', async ctx => ctx.mongod.getUri())
-  .add('client', async ctx => new MongoClient(ctx.uri, {useNewUrlParser: true}))
+  .add('client', async ctx => new MongoClient(ctx.uri, {useNewUrlParser: true, useUnifiedTopology: true}))
   .do(async ctx => ctx.client.connect())
   .finally(async ctx => ctx.client.close())
   .add('collection', ctx => ctx.client.db(ctx.db).collection('words'))

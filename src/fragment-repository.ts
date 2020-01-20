@@ -53,7 +53,10 @@ function createBulkOperations(guideWords: readonly GuideWords[]) {
 }
 
 export async function setGuideWords(uri: string, db: string, ssl: boolean, guideWords: readonly GuideWords[]) {
-  const options: MongoClientOptions = {useNewUrlParser: true}
+  const options: MongoClientOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
   if (ssl) {
     options.ssl = true
     options.sslValidate = false
